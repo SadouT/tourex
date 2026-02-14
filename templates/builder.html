@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TourEx - Flutter App Builder</title>
+  <link rel="stylesheet" href="/static/css/builder.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- ============================================================ -->
+  <!-- PROJECT LIST MODAL                                           -->
+  <!-- ============================================================ -->
+  <div id="project-modal" class="modal-overlay active">
+    <div class="modal">
+      <h2>TourEx Flutter Builder</h2>
+      <p class="modal-sub">Create and design Flutter apps visually</p>
+      <div class="modal-actions">
+        <input type="text" id="new-project-name" placeholder="Project name..." value="My App">
+        <button id="btn-create-project" class="btn btn-primary">
+          <span class="material-symbols-outlined">add</span> New Project
+        </button>
+      </div>
+      <div id="project-list" class="project-list"></div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- MAIN BUILDER LAYOUT                                          -->
+  <!-- ============================================================ -->
+  <div id="builder" class="builder hidden">
+    <!-- TOOLBAR -->
+    <header class="toolbar">
+      <div class="toolbar-left">
+        <button id="btn-back" class="btn btn-icon" title="Back to projects">
+          <span class="material-symbols-outlined">arrow_back</span>
+        </button>
+        <span id="project-title" class="project-title">My App</span>
+      </div>
+      <div class="toolbar-center">
+        <div class="page-tabs" id="page-tabs"></div>
+        <button id="btn-add-page" class="btn btn-sm" title="Add page">
+          <span class="material-symbols-outlined">add</span>
+        </button>
+      </div>
+      <div class="toolbar-right">
+        <button id="btn-undo" class="btn btn-icon" title="Undo (Ctrl+Z)">
+          <span class="material-symbols-outlined">undo</span>
+        </button>
+        <button id="btn-redo" class="btn btn-icon" title="Redo (Ctrl+Y)">
+          <span class="material-symbols-outlined">redo</span>
+        </button>
+        <div class="separator"></div>
+        <button id="btn-theme" class="btn btn-sm">
+          <span class="material-symbols-outlined">palette</span> Theme
+        </button>
+        <button id="btn-preview" class="btn btn-sm btn-accent">
+          <span class="material-symbols-outlined">code</span> Code
+        </button>
+        <button id="btn-export" class="btn btn-sm btn-primary">
+          <span class="material-symbols-outlined">download</span> Export
+        </button>
+      </div>
+    </header>
+
+    <div class="main-area">
+      <!-- LEFT PANEL - Widget Palette -->
+      <aside class="panel panel-left" id="panel-left">
+        <div class="panel-header">
+          <h3>Widgets</h3>
+          <input type="text" id="widget-search" placeholder="Search widgets..." class="search-input">
+        </div>
+        <div class="widget-categories" id="widget-palette"></div>
+      </aside>
+
+      <!-- CENTER - Canvas -->
+      <main class="canvas-area">
+        <div class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen" id="canvas"></div>
+        </div>
+      </main>
+
+      <!-- RIGHT PANEL - Widget Tree + Properties -->
+      <aside class="panel panel-right" id="panel-right">
+        <div class="panel-tabs">
+          <button class="panel-tab active" data-tab="tree">
+            <span class="material-symbols-outlined">account_tree</span> Tree
+          </button>
+          <button class="panel-tab" data-tab="properties">
+            <span class="material-symbols-outlined">tune</span> Properties
+          </button>
+        </div>
+        <div class="panel-content" id="tab-tree">
+          <div id="widget-tree" class="widget-tree"></div>
+        </div>
+        <div class="panel-content hidden" id="tab-properties">
+          <div id="properties-editor" class="properties-editor">
+            <p class="hint">Select a widget to edit its properties</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- CODE PREVIEW MODAL                                           -->
+  <!-- ============================================================ -->
+  <div id="code-modal" class="modal-overlay">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h3>Generated Flutter Code</h3>
+        <div>
+          <button id="btn-copy-code" class="btn btn-sm">
+            <span class="material-symbols-outlined">content_copy</span> Copy
+          </button>
+          <button class="btn btn-icon modal-close" data-close="code-modal">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+      </div>
+      <pre id="code-output" class="code-output"><code></code></pre>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- THEME MODAL                                                  -->
+  <!-- ============================================================ -->
+  <div id="theme-modal" class="modal-overlay">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h3>App Theme</h3>
+        <button class="btn btn-icon modal-close" data-close="theme-modal">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="theme-editor">
+        <label>Primary Color
+          <input type="color" id="theme-primary" value="#2196F3">
+        </label>
+        <label>Brightness
+          <select id="theme-brightness">
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </label>
+        <button id="btn-apply-theme" class="btn btn-primary" style="margin-top:12px;width:100%">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/widgets.js"></script>
+  <script src="/static/js/builder.js"></script>
+</body>
+</html>
