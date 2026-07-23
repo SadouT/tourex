@@ -10,7 +10,6 @@ Executer avec :
 
 from __future__ import annotations
 
-import json
 import os
 import sys
 from pathlib import Path
@@ -174,26 +173,17 @@ def test_local_scanner_delete(tmp_path: Path) -> None:
 # --------------------------------------------------------------------------- #
 # config
 # --------------------------------------------------------------------------- #
-def test_load_config_json(tmp_path: Path) -> None:
-    cfg = {
-        "dry_run": True,
-        "workers": 4,
-        "pairs": [{"name": "p1", "mz1": "/a", "backup": "/b"}],
-    }
-    path = tmp_path / "c.json"
-    path.write_text(json.dumps(cfg), encoding="utf-8")
-    config = load_config(str(path))
-    assert config.dry_run is True
-    assert config.workers == 4
-    assert config.pairs[0].mz1 == "/a"
-    assert config.pairs[0].backup == "/b"
-
-
 def test_load_config_ini(tmp_path: Path) -> None:
     ini = (
         "[general]\n"
         "dry_run = false\n"
-        "workers = 3\n\n"
+        "workers = 3\n"
+        "date_format = %Y%m%d\n\n"
+        "[ssh:mz1]\n"
+        "enabled = false\n"
+        "host = mz1\n"
+        "user = mzadmin\n"
+        "password = secret\n\n"
         "[pair:EC6]\n"
         "mz1 = /prod/ec6\n"
         "backup = /save/ec6\n"
@@ -203,18 +193,30 @@ def test_load_config_ini(tmp_path: Path) -> None:
     config = load_config(str(path))
     assert config.dry_run is False
     assert config.workers == 3
+    assert config.date_format == "%Y%m%d"          # pas d'interpolation du '%'
+    assert config.mz1_ssh.password == "secret"
     assert config.pairs[0].name == "EC6"
     assert config.pairs[0].mz1 == "/prod/ec6"
 
 
 def test_load_config_missing_pairs(tmp_path: Path) -> None:
-    path = tmp_path / "c.json"
-    path.write_text(json.dumps({"pairs": []}), encoding="utf-8")
+    path = tmp_path / "c.ini"
+    path.write_text("[general]\ndry_run = true\n", encoding="utf-8")
     try:
         load_config(str(path))
     except ConfigError:
         return
     raise AssertionError("Une config sans couples aurait du lever ConfigError")
+
+
+def test_load_config_rejects_non_ini(tmp_path: Path) -> None:
+    path = tmp_path / "c.json"
+    path.write_text("{}", encoding="utf-8")
+    try:
+        load_config(str(path))
+    except ConfigError:
+        return
+    raise AssertionError("Une extension non INI aurait du lever ConfigError")
 
 
 # --------------------------------------------------------------------------- #
@@ -235,9 +237,9 @@ def _run_all() -> None:
         for sub, func in (
             ("t1", test_local_scanner),
             ("t2", test_local_scanner_delete),
-            ("t3", test_load_config_json),
-            ("t4", test_load_config_ini),
-            ("t5", test_load_config_missing_pairs),
+            ("t3", test_load_config_ini),
+            ("t4", test_load_config_missing_pairs),
+            ("t5", test_load_config_rejects_non_ini),
         ):
             target = base / sub
             target.mkdir(parents=True, exist_ok=True)

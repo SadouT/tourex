@@ -9,7 +9,7 @@ supprimer de maniere securisee les donnees de MZ1 une fois la sauvegarde
 verifiee.
 
 Modules principaux :
-    config          Chargement et validation de la configuration (YAML/JSON/INI).
+    config          Chargement et validation de la configuration (INI).
     models          Structures de donnees (statistiques, lignes de comparaison).
     logging_setup   Configuration de la journalisation (fichier + console).
     scanner         Scan des repertoires (local via os.scandir, distant via SSH).

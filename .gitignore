@@ -4,6 +4,4 @@ rapport_smsc_*.html
 
 # mz_cleanup : logs et configuration locale
 mz_cleanup.log
-config.mz_cleanup.yaml
-config.mz_cleanup.json
 config.mz_cleanup.ini

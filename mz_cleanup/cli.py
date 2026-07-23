@@ -47,7 +47,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "-c", "--config", required=True,
-        help="Chemin du fichier de configuration (YAML, JSON ou INI).",
+        help="Chemin du fichier de configuration (format INI : .ini / .cfg).",
     )
     parser.add_argument(
         "--dry-run", dest="dry_run", action="store_true", default=None,

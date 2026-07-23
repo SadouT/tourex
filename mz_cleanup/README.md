@@ -25,53 +25,48 @@ securisee les donnees de MZ1 **uniquement lorsque la sauvegarde est verifiee**.
   `find` en un seul aller-retour SSH.
 - **Robuste** : poursuite du traitement malgre un dossier inaccessible, arret
   propre sur `Ctrl+C`, journalisation detaillee et horodatee.
-- **Autonome** : le coeur ne depend que de la bibliotheque standard. YAML et SSH
-  sont des options.
+- **Autonome** : le coeur ne depend que de la bibliotheque standard. Seul le
+  mode SSH (facultatif) requiert un paquet externe.
 
 ## Installation
 
-Aucune dependance obligatoire (Python 3.10+). Options :
+Aucune dependance obligatoire (Python 3.10+). Uniquement pour le mode SSH :
 
 ```bash
-pip install -r requirements-mz_cleanup.txt   # PyYAML (config YAML) + paramiko (SSH)
+pip install -r requirements-mz_cleanup.txt   # paramiko (acces SSH distant)
 ```
 
 ## Configuration
 
-Copiez un des exemples fournis a la racine du depot et adaptez-le :
+La configuration est au format **INI** (`.ini` / `.cfg`). Copiez l'exemple
+fourni a la racine du depot et adaptez-le :
 
-- `config.mz_cleanup.example.yaml` (YAML)
-- `config.mz_cleanup.example.json` (JSON)
+- `config.mz_cleanup.example.ini`
 
-Formats supportes : **YAML**, **JSON**, **INI** (deduit de l'extension).
+Sections INI :
 
-Principaux parametres :
-
-| Champ          | Role                                                        |
-| -------------- | ----------------------------------------------------------- |
-| `pairs`        | Couples `mz1` / `backup` de repertoires a comparer.         |
-| `mz1_ssh`      | Connexion SSH vers MZ1 (`enabled: false` = acces local).    |
-| `backup_ssh`   | Connexion SSH vers BACKUP-MZ.                               |
-| `dry_run`      | Mode simulation (aucune suppression).                       |
-| `force`        | Autorise la suppression malgre une sauvegarde differente.   |
-| `workers`      | Nombre de threads de comptage.                              |
-| `date_pattern` | Regex des dossiers dates (defaut `\d{8}`).                   |
-| `logging`      | Niveaux et fichier de log.                                  |
+| Section         | Role                                                        |
+| --------------- | ----------------------------------------------------------- |
+| `[general]`     | `dry_run`, `force`, `workers`, `date_pattern`, `date_format`. |
+| `[logging]`     | `level`, `console_level`, `file`.                           |
+| `[ssh:mz1]`     | Connexion SSH vers MZ1 (`enabled = false` = acces local).   |
+| `[ssh:backup]`  | Connexion SSH vers BACKUP-MZ.                               |
+| `[pair:NOM]`    | Un couple `mz1` / `backup` (autant de sections que voulu).  |
 
 ## Utilisation
 
 ```bash
 # Scan + comparaison seulement (aucune phase de suppression)
-python -m mz_cleanup --config config.mz_cleanup.yaml --no-delete
+python -m mz_cleanup --config config.mz_cleanup.ini --no-delete
 
 # Session interactive (selection puis confirmation ; dry-run selon la config)
-python -m mz_cleanup --config config.mz_cleanup.yaml
+python -m mz_cleanup --config config.mz_cleanup.ini
 
 # Selectionner automatiquement les dossiers OK, sans interaction, en reel
-python -m mz_cleanup --config config.mz_cleanup.yaml --no-dry-run --select ok --yes
+python -m mz_cleanup --config config.mz_cleanup.ini --no-dry-run --select ok --yes
 
 # Alternative sans "-m" :
-python run_mz_cleanup.py --config config.mz_cleanup.yaml
+python run_mz_cleanup.py --config config.mz_cleanup.ini
 ```
 
 ### Principales options
@@ -115,7 +110,7 @@ Seuls les dossiers `OK` sont supprimables sans `--force`.
 
 ```
 mz_cleanup/
-  config.py         Chargement/validation de la configuration (YAML/JSON/INI).
+  config.py         Chargement/validation de la configuration (INI).
   models.py         Structures de donnees (DirStat, ComparisonRow, Statut...).
   logging_setup.py  Journalisation fichier + console coloree.
   scanner.py        Scan local (os.scandir) et distant (SSH/find) + suppression.

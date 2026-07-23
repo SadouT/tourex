@@ -2,19 +2,13 @@
 # -*- coding: utf-8 -*-
 """Chargement et validation de la configuration.
 
-Trois formats sont supportes :
-    * YAML  (necessite le paquet ``PyYAML``) ;
-    * JSON  (bibliotheque standard) ;
-    * INI   (bibliotheque standard ``configparser``).
-
-Le format est deduit de l'extension du fichier (``.yaml`` / ``.yml``,
-``.json``, ``.ini`` / ``.cfg``).
+La configuration est au format **INI** (bibliotheque standard ``configparser``).
+Le fichier porte l'extension ``.ini`` ou ``.cfg``.
 """
 
 from __future__ import annotations
 
 import configparser
-import json
 import os
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -138,33 +132,8 @@ class AppConfig:
 
 
 # --------------------------------------------------------------------------- #
-# Lecture des differents formats de fichier
+# Lecture du fichier de configuration (INI)
 # --------------------------------------------------------------------------- #
-def _load_yaml(path: Path) -> dict[str, Any]:
-    """Charge un fichier YAML (necessite PyYAML)."""
-    try:
-        import yaml  # type: ignore
-    except ImportError as exc:  # pragma: no cover - depend de l'environnement
-        raise ConfigError(
-            "Le format YAML necessite le paquet 'PyYAML' (pip install pyyaml). "
-            "Vous pouvez aussi fournir une configuration JSON ou INI."
-        ) from exc
-    with path.open("r", encoding="utf-8") as handle:
-        data = yaml.safe_load(handle)
-    if not isinstance(data, dict):
-        raise ConfigError("Le fichier YAML doit contenir un objet a la racine.")
-    return data
-
-
-def _load_json(path: Path) -> dict[str, Any]:
-    """Charge un fichier JSON."""
-    with path.open("r", encoding="utf-8") as handle:
-        data = json.load(handle)
-    if not isinstance(data, dict):
-        raise ConfigError("Le fichier JSON doit contenir un objet a la racine.")
-    return data
-
-
 def _load_ini(path: Path) -> dict[str, Any]:
     """Charge un fichier INI et le convertit vers la structure attendue.
 
@@ -259,10 +228,10 @@ def _from_dict(data: dict[str, Any]) -> AppConfig:
 
 
 def load_config(path: str | os.PathLike[str]) -> AppConfig:
-    """Charge et valide la configuration depuis un fichier.
+    """Charge et valide la configuration depuis un fichier INI.
 
     Args:
-        path: Chemin du fichier de configuration (YAML, JSON ou INI).
+        path: Chemin du fichier de configuration au format INI (.ini / .cfg).
 
     Returns:
         L'objet ``AppConfig`` valide.
@@ -275,21 +244,16 @@ def load_config(path: str | os.PathLike[str]) -> AppConfig:
         raise ConfigError(f"Fichier de configuration introuvable : {config_path}")
 
     suffix = config_path.suffix.lower()
+    if suffix not in (".ini", ".cfg"):
+        raise ConfigError(
+            f"Extension de configuration non supportee : '{suffix}'. "
+            "Seul le format INI (.ini / .cfg) est accepte."
+        )
     try:
-        if suffix in (".yaml", ".yml"):
-            data = _load_yaml(config_path)
-        elif suffix == ".json":
-            data = _load_json(config_path)
-        elif suffix in (".ini", ".cfg"):
-            data = _load_ini(config_path)
-        else:
-            raise ConfigError(
-                f"Extension de configuration non supportee : '{suffix}'. "
-                "Utilisez .yaml, .json ou .ini."
-            )
+        data = _load_ini(config_path)
     except ConfigError:
         raise
-    except Exception as exc:  # erreurs de parsing (yaml/json/ini)
+    except Exception as exc:  # erreurs de parsing INI
         raise ConfigError(f"Erreur de lecture de {config_path} : {exc}") from exc
 
     config = _from_dict(data)
