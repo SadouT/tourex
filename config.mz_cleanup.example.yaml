@@ -30,15 +30,17 @@ date_format: '%Y%m%d'
 # Le script s'execute sur Billing_SIFAC. Si un serveur est accessible
 # localement (systeme de fichiers monte), laissez enabled: false.
 # Sinon, activez SSH et renseignez les informations de connexion.
+#
+# Authentification par mot de passe.
+# (Astuce securite : evitez de stocker le mot de passe en clair ; vous pouvez
+#  restreindre les droits du fichier avec `chmod 600 config.mz_cleanup.yaml`.)
 # --------------------------------------------------------------------------- #
 mz1_ssh:
   enabled: false            # true pour se connecter a MZ1 via SSH
   host: mz1.exemple.local
   port: 22
   user: mzadmin
-  # Utilisez de preference une cle SSH plutot qu'un mot de passe.
-  key_file: ~/.ssh/id_rsa
-  # password: "..."        # deconseille ; preferez key_file
+  password: "motdepasse_mz1"
   timeout: 30
 
 backup_ssh:
@@ -46,7 +48,7 @@ backup_ssh:
   host: backup-mz.exemple.local
   port: 22
   user: mzadmin
-  key_file: ~/.ssh/id_rsa
+  password: "motdepasse_backup"
   timeout: 30
 
 # --------------------------------------------------------------------------- #
@@ -59,14 +61,27 @@ logging:
 
 # --------------------------------------------------------------------------- #
 # Couples de repertoires a comparer.
-# Chaque couple associe un repertoire de production MZ1 a son repertoire de
-# sauvegarde BACKUP-MZ correspondant.
+# Chaque entree associe un repertoire de production MZ1 a son repertoire de
+# sauvegarde BACKUP-MZ correspondant. Ajoutez autant d'entrees que necessaire
+# (GGSN/01, GGSN/02, GGSN/03, ...).
 # --------------------------------------------------------------------------- #
 pairs:
   - name: EC6/forw/GGSN/01
     mz1: /mzarchives/EC6/forw/GGSN/01/MACH
     backup: /BACKUP-MZ1/mzarchives/EC6/GGSN/01
 
-  # - name: EC6/forw/GGSN/02
-  #   mz1: /mzarchives/EC6/forw/GGSN/02/MACH
-  #   backup: /BACKUP-MZ1/mzarchives/EC6/GGSN/02
+  - name: EC6/forw/GGSN/02
+    mz1: /mzarchives/EC6/forw/GGSN/02/MACH
+    backup: /BACKUP-MZ1/mzarchives/EC6/GGSN/02
+
+  - name: EC6/forw/GGSN/03
+    mz1: /mzarchives/EC6/forw/GGSN/03/MACH
+    backup: /BACKUP-MZ1/mzarchives/EC6/GGSN/03
+
+  - name: EC6/forw/GGSN/04
+    mz1: /mzarchives/EC6/forw/GGSN/04/MACH
+    backup: /BACKUP-MZ1/mzarchives/EC6/GGSN/04
+
+  - name: EC6/forw/GGSN/05
+    mz1: /mzarchives/EC6/forw/GGSN/05/MACH
+    backup: /BACKUP-MZ1/mzarchives/EC6/GGSN/05

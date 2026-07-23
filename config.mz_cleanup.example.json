@@ -9,7 +9,7 @@
     "host": "mz1.exemple.local",
     "port": 22,
     "user": "mzadmin",
-    "key_file": "~/.ssh/id_rsa",
+    "password": "motdepasse_mz1",
     "timeout": 30
   },
   "backup_ssh": {
@@ -17,7 +17,7 @@
     "host": "backup-mz.exemple.local",
     "port": 22,
     "user": "mzadmin",
-    "key_file": "~/.ssh/id_rsa",
+    "password": "motdepasse_backup",
     "timeout": 30
   },
   "logging": {
@@ -30,6 +30,26 @@
       "name": "EC6/forw/GGSN/01",
       "mz1": "/mzarchives/EC6/forw/GGSN/01/MACH",
       "backup": "/BACKUP-MZ1/mzarchives/EC6/GGSN/01"
+    },
+    {
+      "name": "EC6/forw/GGSN/02",
+      "mz1": "/mzarchives/EC6/forw/GGSN/02/MACH",
+      "backup": "/BACKUP-MZ1/mzarchives/EC6/GGSN/02"
+    },
+    {
+      "name": "EC6/forw/GGSN/03",
+      "mz1": "/mzarchives/EC6/forw/GGSN/03/MACH",
+      "backup": "/BACKUP-MZ1/mzarchives/EC6/GGSN/03"
+    },
+    {
+      "name": "EC6/forw/GGSN/04",
+      "mz1": "/mzarchives/EC6/forw/GGSN/04/MACH",
+      "backup": "/BACKUP-MZ1/mzarchives/EC6/GGSN/04"
+    },
+    {
+      "name": "EC6/forw/GGSN/05",
+      "mz1": "/mzarchives/EC6/forw/GGSN/05/MACH",
+      "backup": "/BACKUP-MZ1/mzarchives/EC6/GGSN/05"
     }
   ]
 }
