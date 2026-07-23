@@ -1,0 +1,13 @@
+# Dependances de l'outil mz_cleanup.
+#
+# Le coeur de l'outil fonctionne avec la bibliotheque standard uniquement
+# (configuration JSON/INI, scan local, affichage). Les paquets ci-dessous sont
+# OPTIONNELS et n'ont d'utilite que pour certaines fonctionnalites :
+#
+#   * PyYAML   : configuration au format YAML (sinon utilisez JSON ou INI).
+#   * paramiko : connexion SSH aux serveurs distants MZ1 / BACKUP-MZ.
+#
+# Installez uniquement ce dont vous avez besoin.
+
+PyYAML>=6.0      # configuration YAML (optionnel)
+paramiko>=3.0    # acces SSH distant (optionnel)

@@ -1,0 +1,35 @@
+{
+  "dry_run": true,
+  "force": false,
+  "workers": 8,
+  "date_pattern": "\\d{8}",
+  "date_format": "%Y%m%d",
+  "mz1_ssh": {
+    "enabled": false,
+    "host": "mz1.exemple.local",
+    "port": 22,
+    "user": "mzadmin",
+    "key_file": "~/.ssh/id_rsa",
+    "timeout": 30
+  },
+  "backup_ssh": {
+    "enabled": false,
+    "host": "backup-mz.exemple.local",
+    "port": 22,
+    "user": "mzadmin",
+    "key_file": "~/.ssh/id_rsa",
+    "timeout": 30
+  },
+  "logging": {
+    "level": "DEBUG",
+    "console_level": "INFO",
+    "file": "mz_cleanup.log"
+  },
+  "pairs": [
+    {
+      "name": "EC6/forw/GGSN/01",
+      "mz1": "/mzarchives/EC6/forw/GGSN/01/MACH",
+      "backup": "/BACKUP-MZ1/mzarchives/EC6/GGSN/01"
+    }
+  ]
+}

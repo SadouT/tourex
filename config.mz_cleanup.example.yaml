@@ -1,0 +1,72 @@
+# =========================================================================== #
+# Exemple de configuration pour l'outil mz_cleanup
+#
+# Copiez ce fichier (ex. config.mz_cleanup.yaml) et adaptez-le a votre
+# environnement, puis lancez :
+#     python -m mz_cleanup --config config.mz_cleanup.yaml
+#
+# Formats supportes : YAML (ce fichier), JSON, INI.
+# =========================================================================== #
+
+# Mode simulation : aucune suppression reelle n'est effectuee tant que dry_run
+# vaut true. A laisser a true tant que le comportement n'est pas valide.
+dry_run: true
+
+# Autorise la suppression de dossiers dont la sauvegarde differe (equivaut a
+# --force). Fortement deconseille par defaut.
+force: false
+
+# Nombre de threads utilises pour compter les fichiers en parallele.
+workers: 8
+
+# Detection des dossiers dates.
+#   date_pattern : expression reguliere (sans ancrage) du nom de dossier.
+#   date_format  : format strptime de validation ("" pour ne pas valider).
+date_pattern: '\d{8}'
+date_format: '%Y%m%d'
+
+# --------------------------------------------------------------------------- #
+# Connexion aux serveurs.
+# Le script s'execute sur Billing_SIFAC. Si un serveur est accessible
+# localement (systeme de fichiers monte), laissez enabled: false.
+# Sinon, activez SSH et renseignez les informations de connexion.
+# --------------------------------------------------------------------------- #
+mz1_ssh:
+  enabled: false            # true pour se connecter a MZ1 via SSH
+  host: mz1.exemple.local
+  port: 22
+  user: mzadmin
+  # Utilisez de preference une cle SSH plutot qu'un mot de passe.
+  key_file: ~/.ssh/id_rsa
+  # password: "..."        # deconseille ; preferez key_file
+  timeout: 30
+
+backup_ssh:
+  enabled: false            # true pour se connecter a BACKUP-MZ via SSH
+  host: backup-mz.exemple.local
+  port: 22
+  user: mzadmin
+  key_file: ~/.ssh/id_rsa
+  timeout: 30
+
+# --------------------------------------------------------------------------- #
+# Journalisation.
+# --------------------------------------------------------------------------- #
+logging:
+  level: DEBUG              # niveau enregistre dans le fichier
+  console_level: INFO       # niveau affiche dans la console
+  file: mz_cleanup.log
+
+# --------------------------------------------------------------------------- #
+# Couples de repertoires a comparer.
+# Chaque couple associe un repertoire de production MZ1 a son repertoire de
+# sauvegarde BACKUP-MZ correspondant.
+# --------------------------------------------------------------------------- #
+pairs:
+  - name: EC6/forw/GGSN/01
+    mz1: /mzarchives/EC6/forw/GGSN/01/MACH
+    backup: /BACKUP-MZ1/mzarchives/EC6/GGSN/01
+
+  # - name: EC6/forw/GGSN/02
+  #   mz1: /mzarchives/EC6/forw/GGSN/02/MACH
+  #   backup: /BACKUP-MZ1/mzarchives/EC6/GGSN/02
